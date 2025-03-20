@@ -74,21 +74,21 @@ import { ValidationUtils } from './app/utils/validation.utils';
     <hr style="margin: 20px 0;">
 
     <div style="padding: 20px;">
-      <h1>Month Selector CCM -1 + 3</h1>
-      <select 
-        [(ngModel)]="selectedDate" 
-        (change)="onDateChange()"
-        style="padding: 8px; font-size: 16px; border-radius: 4px;">
-        <option value="">-- Select Effective Date --</option>
-        <option *ngFor="let date of availableDates" [value]="date.toISOString()">
-          {{ date | date:'MMMM d, yyyy' }}
-        </option>
-      </select>
+    <h1>Month Selector</h1>
+    <select 
+      [(ngModel)]="selectedDate" 
+      (change)="onDateChange()"
+      style="padding: 8px; font-size: 16px; border-radius: 4px;">
+      <option value="">-- Select Effective Date --</option>
+      <option *ngFor="let date of availableDates" [value]="date.toISOString()">
+        {{ date | date:'MMMM d, yyyy' }}
+      </option>
+    </select>
 
-      <div style="margin-top: 20px;">
-        Selected date: {{ selectedDate ? (selectedDate | date:'longDate') : 'No date selected' }}
-      </div>
+    <div style="margin-top: 20px;">
+      Selected date: {{ selectedDate ? (selectedDate | date:'longDate') : 'No date selected' }}
     </div>
+  </div>
   `,
 })
 export class App {
@@ -157,9 +157,6 @@ export class App {
       const date = new Date(year, month, 1);
       this.availableDates.push(date);
     }
-
-    // Set default selected date to current month
-    this.selectedDate = this.availableDates[1].toISOString(); // Index 1 is current month (0 is previous month)
   }
 
   onDateChange() {
