@@ -70,6 +70,25 @@ import { ValidationUtils } from './app/utils/validation.utils';
         {{ resultMessage }}
       </div>
     </div>
+
+    <hr style="margin: 20px 0;">
+
+    <div style="padding: 20px;">
+      <h1>Month Selector CCM -1 + 3</h1>
+      <select 
+        [(ngModel)]="selectedDate" 
+        (change)="onDateChange()"
+        style="padding: 8px; font-size: 16px; border-radius: 4px;">
+        <option value="">-- Select Effective Date --</option>
+        <option *ngFor="let date of availableDates" [value]="date.toISOString()">
+          {{ date | date:'MMMM d, yyyy' }}
+        </option>
+      </select>
+
+      <div style="margin-top: 20px;">
+        Selected date: {{ selectedDate ? (selectedDate | date:'longDate') : 'No date selected' }}
+      </div>
+    </div>
   `,
 })
 export class App {
@@ -80,7 +99,10 @@ export class App {
   endDate: string = '';
   monthsDifference: number | null = null;
 
-  constructor(private validationUtils: ValidationUtils) {}
+  constructor(private validationUtils: ValidationUtils) {
+    this.generateDates();
+
+  }
 
   checkValue() {
     this.isNullOrUndefined = this.validationUtils.checkNullAndUndefined(this.inputValue);
@@ -107,6 +129,41 @@ export class App {
     if (end.getDate() < start.getDate()) {
       this.monthsDifference--;
     }
+  }
+  availableDates: Date[] = [];
+  selectedDate: string = '';
+  generateDates() {
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+
+    // Generate dates for -1, 0, +1, +2, +3 months
+    for (let i = -1; i <= 3; i++) {
+      let month = currentMonth + i;
+      let year = currentYear;
+
+      // Handle year transition for previous months
+      if (month < 0) {
+        month = 12 + month;
+        year--;
+      }
+      // Handle year transition for future months
+      else if (month > 11) {
+        month = month - 12;
+        year++;
+      }
+
+      // Create date for 1st of the month
+      const date = new Date(year, month, 1);
+      this.availableDates.push(date);
+    }
+
+    // Set default selected date to current month
+    this.selectedDate = this.availableDates[1].toISOString(); // Index 1 is current month (0 is previous month)
+  }
+
+  onDateChange() {
+    console.log('Selected date:', this.selectedDate);
   }
 }
 
